@@ -1,6 +1,6 @@
 package proto
 
-import "github.com/tianxinbaiyun/simple-chat/model"
+import "github.com/tianxinbaiyun/simple-chat/common"
 
 type Message struct {
 	Cmd  string `json:"cmd"`
@@ -13,10 +13,26 @@ type LoginCmd struct {
 }
 
 type RegisterCmd struct {
-	User model.User `json:"user"`
+	User common.User `json:"user"`
 }
 
 type LoginCmdRes struct {
 	Code  int    `json:"code"`
+	User  []int  `json:"users"`
 	Error string `json:"error"`
+}
+
+type UserStatusNotify struct {
+	UserId int `json:"user_id"`
+	Status int `json:"user_status"`
+}
+
+type UserSendMessageReq struct {
+	UserId int    `json:"user_id"`
+	Data   string `json:"data"`
+}
+
+type UserRecvMessageReq struct {
+	UserId int    `json:"user_id"`
+	Data   string `json:"data"`
 }

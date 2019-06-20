@@ -6,6 +6,8 @@ import (
 
 	"encoding/json"
 
+	"github.com/tianxinbaiyun/simple-chat/common"
+
 	"github.com/garyburd/redigo/redis"
 )
 
@@ -25,7 +27,7 @@ func NewUserMgr(pool *redis.Pool) (mgr *UserMgr) {
 	return
 }
 
-func (p *UserMgr) getUser(conn redis.Conn, id int) (user *User, err error) {
+func (p *UserMgr) getUser(conn redis.Conn, id int) (user *common.User, err error) {
 
 	result, err := redis.String(conn.Do("HGet", UserTable, fmt.Sprintf("%d", id)))
 	if err != nil {
@@ -35,7 +37,7 @@ func (p *UserMgr) getUser(conn redis.Conn, id int) (user *User, err error) {
 		return
 	}
 
-	user = &User{}
+	user = &common.User{}
 	err = json.Unmarshal([]byte(result), user)
 	if err != nil {
 		return
@@ -43,7 +45,7 @@ func (p *UserMgr) getUser(conn redis.Conn, id int) (user *User, err error) {
 	return
 }
 
-func (p *UserMgr) Login(id int, passwd string) (user *User, err error) {
+func (p *UserMgr) Login(id int, passwd string) (user *common.User, err error) {
 
 	conn := p.pool.Get()
 	defer conn.Close()
@@ -55,15 +57,16 @@ func (p *UserMgr) Login(id int, passwd string) (user *User, err error) {
 
 	if user.UserId != id || user.Passwd != passwd {
 		err = ErrInvalidPasswd
+		return
 	}
 
-	user.Status = UserStatusOnline
+	user.Status = common.UserStatusOnline
 	user.LastLogin = fmt.Sprintf("%v", time.Now())
 
 	return
 }
 
-func (p *UserMgr) Register(user *User) (err error) {
+func (p *UserMgr) Register(user *common.User) (err error) {
 
 	conn := p.pool.Get()
 	defer conn.Close()
