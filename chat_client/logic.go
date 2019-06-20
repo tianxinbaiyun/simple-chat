@@ -71,10 +71,14 @@ func enterMenu(conn net.Conn) {
 	fmt.Println("2. talk")
 	fmt.Println("3. list message")
 	fmt.Println("4. exit")
+	fmt.Println()
 
 	var sel int
 	fmt.Scanf("%d\n", &sel)
+
 	switch sel {
+	case 0:
+		break
 	case 1:
 		outputUserOnline()
 	case 2:
@@ -85,6 +89,7 @@ func enterMenu(conn net.Conn) {
 	case 4:
 		os.Exit(0)
 	}
+	fmt.Println("--------------------------------------")
 }
 
 func logic(conn net.Conn) {
